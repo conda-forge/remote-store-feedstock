@@ -7,16 +7,16 @@ Home: https://remotestore.dev/
 
 Package license: MIT
 
-Summary: Write file storage code once. Run it against local files, S3, SFTP, or Azure.
+Summary: Write file storage code once. Run it against local files, S3, SFTP, Azure, or OneDrive.
 
 Development: https://github.com/haalfi/remote-store
 
 Documentation: https://docs.remotestore.dev/
 
 remote-store provides a consistent Python API for file storage across
-backends (Local, S3, SFTP, Azure). Write file storage code once, run it
-against any backend. Core has no dependencies; optional extras add
-cloud backend support.
+backends (Local, Memory, S3, Azure, OneDrive, SFTP, HTTP, SQL). Write file
+storage code once, run it against any backend. Core has no dependencies;
+optional extras add cloud backend support.
 
 Current build status
 ====================
