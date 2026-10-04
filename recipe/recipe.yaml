@@ -1,15 +1,24 @@
 # conda-forge recipe for remote-store
 # v1 format (CEP-13 / rattler-build)
 #
-# Upstream copy: https://github.com/haalfi/remote-store/blob/master/packaging/conda-forge/recipe.yaml
-# Edits are made there first and copied here verbatim below `context:`, so the
-# two cannot drift.  A gate in that repo (`scripts/check_conda_recipe_pins.py`,
-# run by `hatch run lint`) derives `run_constraints` from the project's
-# `[project.optional-dependencies]` and fails on a missing, extra, or weaker
-# entry.
-
+# GENERATED FILE.  Every change is made upstream, at
+# https://github.com/haalfi/remote-store/blob/master/packaging/conda-forge/recipe.yaml
+# and copied here by that repository's `scripts/gen_conda_feedstock.py`, which
+# replaces this header and carries everything below `context:` byte for byte.
+# Editing this copy directly puts it out of step with its source, where a gate
+# derives `run_constraints` from the project's own optional dependencies and
+# fails on a missing, extra or weaker entry.
+#
+# `build.number` is the feedstock's own, and upstream leaves it alone:
+# conda-forge increments it for rebuilds and migrations. Every other value here
+# is upstream's, `source.sha256` included -- it is set there once the release is
+# on PyPI, and this file carries whatever it says.
+#
+# `python_min` is deliberately NOT set: conda-forge supplies it globally, and
+# hardcoding it would pin this package to one minimum after the ecosystem
+# raises its own.
 context:
-  version: "0.32.0"
+  version: "0.33.0"
 
 package:
   name: remote-store
@@ -17,10 +26,12 @@ package:
 
 source:
   url: https://pypi.org/packages/source/r/remote-store/remote_store-${{ version }}.tar.gz
-  sha256: be46ad694ecc451a32e5a4ad73cab246b8b3362bfd369fbb4fbca563d396289d
+  sha256: 80258c298f8464575272fdef215cdba7e10cb8fec3554ed4cab5f23dc26d8557
 
 build:
   noarch: python
+  # `${{ PYTHON }}`, not a bare `python`: conda-forge's convention, and what the
+  # submitted copy on staged-recipes#32401 already carries.
   script: ${{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
   number: 0
 
@@ -37,7 +48,9 @@ requirements:
     # installed automatically; each is version-constrained if the user installs
     # it alongside remote-store.  Keep this exhaustive: an extra whose floor is
     # absent here is silently unconstrained in conda, and the ones nobody
-    # enumerates are the ones that drift.
+    # enumerates are the ones that drift.  `hatch run lint` runs
+    # scripts/check_conda_recipe_pins.py, which derives the expected set from
+    # pyproject.toml and fails on a missing, extra, or weaker entry.
     #
     # -- Backend extras --
     - s3fs >=2024.2.0
@@ -59,8 +72,8 @@ requirements:
     # serializer's whole surface (`pa.Table.from_pandas`, `pq.write_table`,
     # `pq.read_table`) against pyarrow 12.0.0 shows it does not, so the guide's
     # cell was corrected rather than the floor.
-    # None carries a ceiling: upstream verified the shared arrow/parquet/
-    # S3-PyArrow surface against pyarrow 25 and lifted the earlier `<25` cap on
+    # None carries a ceiling: the shared arrow/parquet/S3-PyArrow surface was
+    # verified against pyarrow 25, which lifted the earlier `<25` cap on
     # `arrow` / `sql-query`, so all three agree on an unbounded `>=`.
     # pyproject.toml is the source of truth for per-extra ranges;
     # scripts/check_conda_recipe_pins.py holds this file to it.
@@ -87,10 +100,6 @@ requirements:
     - pyyaml >=5.1
     - pydantic-settings >=2.0.0
     - dagster >=1.10.18
-    # `toml` is conditional in pyproject (`python_version < '3.11'`); conda has
-    # no per-Python marker here, and an unconditional floor is harmless because
-    # it binds only if tomli is actually installed.
-    - tomli >=1.1.0
 
 tests:
   - python:
@@ -101,8 +110,9 @@ tests:
         - remote_store.ext.glob
         - remote_store.ext.transfer
       pip_check: true
-      # The declared minimum, and whatever the default Python is, so a noarch
-      # package is exercised at both ends rather than only at the floor.
+      # Two entries, matching the submitted copy: the declared minimum, and
+      # whatever the default Python is, so a noarch package is exercised at both
+      # ends rather than only at the floor.
       python_version:
         - ${{ python_min }}.*
         - "*"
